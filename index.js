@@ -85,7 +85,7 @@ async function createApiDoc (opt) {
         if (inputs.indexOf(input) === inputs.length - 1) {
             // 若需要创建文件，则最后一遍对可创建文件的input路径进行createDoc
             options.parse = opt.parse ? opt.parse : false  // 最后一个input路径默认创建文件
-            options.src = input;
+            options.src = last_success_input;
             await createDoc(options);
 
             // 进行completed_api的分析与最终赋值
