@@ -26,7 +26,7 @@ function transformToObject(filters) {
  * @param {object} opt input 项目绝对路径，output apiDoc文档生成绝对路径，apiDocJsonPath apiDoc.json保存绝对路径
  * @param {string[]} opt.input 项目绝对路径
  * @param {string} opt.output apiDoc文档生成绝对路径
- * @param {string} opt.apiDocJsonPath apiDoc.json保存绝对路径
+ * @param {string} [opt.apiDocJsonPath] apiDoc.json保存绝对路径
  */
 async function createApiDoc (opt) {
     let inputs = opt.input;
@@ -34,8 +34,6 @@ async function createApiDoc (opt) {
         throw Error('Input required')
     if (!opt.output)
         throw Error('Output required')
-    if (!opt.apiDocJsonPath)
-        throw Error('ApiDocJsonPath required')
     
     let options = {
         excludeFilters: opt.excludeFilters ? [opt.excludeFilters] : [''],
@@ -99,10 +97,13 @@ async function createApiDoc (opt) {
         }
     }
 
-    if (completed_api !== true && completed_api !== false && !options.parse && !options.simulate)
+    if (completed_api !== true && completed_api !== false && !options.parse && !options.simulate) {
         await fs.writeFileSync(path.join(opt.output, './api_data.json'), completed_api.data + '\n');
         await fs.writeFileSync(path.join(opt.output, './api_data.js'), 'define({ "api": ' + completed_api.data + ' });' + '\n');
-        await fs.writeFileSync(path.join(opt.apiDocJsonPath, './api_data.json'), completed_api.data + '\n');
+        if (opt.apiDocJsonPath) {
+            await fs.writeFileSync(path.join(opt.apiDocJsonPath, './api_data.json'), completed_api.data + '\n');
+        }
+    }
     return completed_api;
 }
 
